@@ -12,15 +12,10 @@ import (
 type Controller struct {
 	Service port.Service
 	Gateway *gin.Engine
-	Config * Config
 }
 
-type Config struct {
-	Port string
-	Debug bool
-}
 
-func NewController(cfg *Config, serv port.Service) *Controller {
+func NewController(serv port.Service) *Controller {
 	gateway := gin.New()
 	gateway.Use(
 		ginZapMiddleware(),
@@ -30,7 +25,6 @@ func NewController(cfg *Config, serv port.Service) *Controller {
 	controller := &Controller{
 		Service: serv,
 		Gateway: gateway,
-		Config: cfg,
 	}
 
 	controller.Gateway.POST("payments", controller.payments)
@@ -44,6 +38,7 @@ func NewController(cfg *Config, serv port.Service) *Controller {
 
 	return controller
 }
+
 
 // middleware to log requests when debug is true
 func ginZapMiddleware() gin.HandlerFunc {
